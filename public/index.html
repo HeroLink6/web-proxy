@@ -7,10 +7,32 @@
 </head>
 <body>
     <h1>Proxy Server</h1>
-    <form id="proxyForm" action="/proxy" method="get">
+    <form id="proxyForm" onsubmit="handleSubmit(event)">
         <label for="url">Enter URL:</label>
         <input type="url" id="url" name="url" required>
         <button type="submit">Proxy</button>
     </form>
+
+    <script>
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const urlInput = document.getElementById('url');
+            const targetURL = urlInput.value;
+
+            if (!targetURL) {
+                return alert('Target URL not provided');
+            }
+
+            try {
+                const response = await fetch(`/proxy?url=${encodeURIComponent(targetURL)}`);
+                const modifiedHTML = await response.text();
+                document.body.innerHTML = modifiedHTML;
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to fetch or modify the content');
+            }
+        }
+    </script>
 </body>
 </html>
+
