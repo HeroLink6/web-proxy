@@ -24,12 +24,9 @@ app.use('/proxy', (req, res) => {
     return res.status(400).send('Target URL not provided');
   }
 
-  proxyMiddleware({
-    target: targetURL,
-  })(req, res);
+  proxyMiddleware(req, res);
 });
 
 app.listen(PORT, () => {
   console.log(`Proxy server is running on http://localhost:${PORT}`);
 });
-
