@@ -20,10 +20,16 @@ app.use('/proxy', async (req, res) => {
     const page = await browser.newPage();
 
     // Navigate to the target website
-    await page.goto(targetURL);
+    const navigationResponse = await page.goto(targetURL);
+    
+    // Log the status of the navigation
+    console.log('Navigation Status:', navigationResponse.status());
 
     // Extract the modified HTML using evaluate
     const modifiedHTML = await page.evaluate(() => document.documentElement.outerHTML);
+
+    // Log the modified HTML
+    console.log('Modified HTML:', modifiedHTML);
 
     // Send the modified HTML back to the client
     res.send(modifiedHTML);
@@ -42,5 +48,3 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Proxy server is running on http://localhost:${PORT}`);
 });
-
-
