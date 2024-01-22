@@ -22,9 +22,11 @@ app.use('/proxy', async (req, res) => {
     // Navigate to the target website
     await page.goto(targetURL);
 
-    // Extract and send the modified HTML back to the client
-    const content = await page.content();
-    res.send(content);
+    // Extract the modified HTML using evaluate
+    const modifiedHTML = await page.evaluate(() => document.documentElement.outerHTML);
+
+    // Send the modified HTML back to the client
+    res.send(modifiedHTML);
 
     await browser.close();
   } catch (error) {
@@ -40,4 +42,5 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Proxy server is running on http://localhost:${PORT}`);
 });
+
 
