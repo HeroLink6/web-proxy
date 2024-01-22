@@ -6,10 +6,10 @@ const proxy = httpProxy.createProxyServer();
 
 const PORT = 3000;
 
-// Handle requests to the /proxy/* path
 app.use('/proxy', (req, res) => {
-  // Extract the target URL from the request URL
   const targetURL = decodeURIComponent(req.url.replace('/proxy/', ''));
+  proxy.web(req, res, { target: targetURL });
+});
 
   // Proxy the request to the dynamically constructed target URL
   proxy.web(req, res, { target: targetURL });
