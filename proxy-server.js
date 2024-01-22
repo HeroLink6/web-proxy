@@ -11,10 +11,6 @@ app.use('/proxy', (req, res) => {
   proxy.web(req, res, { target: targetURL });
 });
 
-  // Proxy the request to the dynamically constructed target URL
-  proxy.web(req, res, { target: targetURL });
-});
-
 // Handle redirects
 proxy.on('proxyRes', (proxyRes, req, res) => {
   if (proxyRes.headers['location']) {
