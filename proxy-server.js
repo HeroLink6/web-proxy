@@ -5,6 +5,9 @@ const app = express();
 
 const PORT = 3000;
 
+// Serve static files from the 'public' directory
+app.use(express.static('public'));
+
 // Set up proxy middleware
 const proxyMiddleware = createProxyMiddleware({
   changeOrigin: true,
@@ -29,3 +32,4 @@ app.use('/proxy', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Proxy server is running on http://localhost:${PORT}`);
 });
+
