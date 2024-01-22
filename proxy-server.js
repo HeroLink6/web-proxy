@@ -1,20 +1,29 @@
 const express = require('express');
-const httpProxy = require('http-proxy');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
-const proxy = httpProxy.createProxyServer();
 
 const PORT = 3000;
 
-app.use('/proxy', (req, res) => {
-  const targetURL = decodeURIComponent(req.url.replace('/proxy/', ''));
-  console.log('Target URL:', targetURL);
+// Set up proxy middleware
+const proxyMiddleware = createProxyMiddleware({
+  changeOrigin: true,
+  pathRewrite: {
+    '^/proxy': '', // Remove the '/proxy' prefix
+  },
+});
 
-  // Proxy the request to the target server
-  proxy.web(req, res, { target: targetURL }, (err) => {
-    console.error('Proxy Error:', err);
-    res.status(500).send('Internal Server Error');
-  });
+// Use the proxy middleware
+app.use('/proxy', (req, res) => {
+  const targetURL = req.query.url;
+
+  if (!targetURL) {
+    return res.status(400).send('Target URL not provided');
+  }
+
+  proxyMiddleware({
+    target: targetURL,
+  })(req, res);
 });
 
 app.listen(PORT, () => {
