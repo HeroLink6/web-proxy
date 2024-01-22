@@ -16,19 +16,20 @@
 
   <script>
     document.getElementById('proxyForm').addEventListener('submit', function (event) {
-      event.preventDefault();
+  event.preventDefault();
 
-      const urlInput = document.getElementById('url');
+  const urlInput = document.getElementById('url');
 
-      // Extract the entered URL
-      const enteredURL = urlInput.value;
+  // Extract the entered URL
+  const enteredURL = urlInput.value;
 
-      // Construct the proxy URL
-      const proxyURL = `https://web-proxy-delta.vercel.app/proxy/${encodeURIComponent(enteredURL)}`;
+  // Construct the proxy URL with a single slash after 'https:'
+  const encodedURL = encodeURIComponent(`https:/${enteredURL}`);
+  const proxyURL = `https://web-proxy-delta.vercel.app/proxy/${encodedURL}`;
 
-      // Redirect the user to the proxy URL
-      window.location.href = proxyURL;
-    });
+  // Redirect the user to the proxy URL
+  window.location.href = proxyURL;
+});
   </script>
 </body>
 </html>
