@@ -1,5 +1,6 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
+const path = require('path');
 
 const app = express();
 
@@ -32,6 +33,11 @@ app.use('/proxy', async (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Proxy server is running on http://localhost:${PORT}`);
 });
+
