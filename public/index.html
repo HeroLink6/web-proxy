@@ -19,15 +19,15 @@
       event.preventDefault();
 
       const urlInput = document.getElementById('url');
-      const resultDiv = document.getElementById('result');
 
       // Extract the entered URL
       const enteredURL = urlInput.value;
 
+      // Construct the proxy URL
       const proxyURL = `https://web-proxy-delta.vercel.app/proxy/${encodeURIComponent(enteredURL)}`;
-      
-      // Display the result (you can redirect the browser to the proxy URL if needed)
-      resultDiv.innerHTML = `<p>Proxy URL: <a href="${proxyURL}" target="_blank">${proxyURL}</a></p>`;
+
+      // Redirect the user to the proxy URL
+      window.location.href = proxyURL;
     });
   </script>
 </body>
