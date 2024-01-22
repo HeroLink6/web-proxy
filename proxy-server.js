@@ -1,30 +1,35 @@
 const express = require('express');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const puppeteer = require('puppeteer');
 
 const app = express();
 
 const PORT = 3000;
 
-// Serve static files from the 'public' directory
 app.use(express.static('public'));
 
-// Set up proxy middleware
-const proxyMiddleware = createProxyMiddleware({
-  changeOrigin: true,
-  pathRewrite: {
-    '^/proxy': '', // Remove the '/proxy' prefix
-  },
-});
-
-// Use the proxy middleware
-app.use('/proxy', (req, res) => {
+app.use('/proxy', async (req, res) => {
   const targetURL = req.query.url;
 
   if (!targetURL) {
     return res.status(400).send('Target URL not provided');
   }
 
-  proxyMiddleware(req, res);
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    // Navigate to the target website
+    await page.goto(targetURL);
+
+    // Extract and send the modified HTML back to the client
+    const content = await page.content();
+    res.send(content);
+
+    await browser.close();
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.listen(PORT, () => {
