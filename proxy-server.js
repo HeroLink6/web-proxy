@@ -8,7 +8,7 @@ const PORT = 3000;
 
 // Serve HTML with a search bar
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + 'public/index.html');
 });
 
 // Handle form submissions
@@ -16,7 +16,7 @@ app.post('/search', (req, res) => {
   const query = req.body.query; // Assuming you have a body-parser middleware for parsing POST data
 
   // Proxy the request to the destination server
-  proxy.web(req, res, { target: `http://example.com/search?q=${query}` });
+  proxy.web(req, res, { target: `https://google.com/search?q=${query}` });
 });
 
 // Handle redirects
