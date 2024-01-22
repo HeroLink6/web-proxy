@@ -25,8 +25,8 @@ app.use('/proxy', (req, res) => {
       // Modify the HTML using Cheerio or any other HTML manipulation library
       const $ = cheerio.load(body);
 
-      // Example: Add a meta tag to the head
-      $('head').append('<meta name="my-custom-meta" content="some content">');
+      // Example: Add a div with a custom message to the body
+      $('body').append('<div>This content was modified by the proxy server!</div>');
 
       // Send the modified HTML back to the client
       res.send($.html());
