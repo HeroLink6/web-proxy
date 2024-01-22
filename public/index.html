@@ -1,35 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Proxy Server</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy Server</title>
 </head>
 <body>
-  <h1>Web Proxy</h1>
-  <form id="proxyForm">
-    <label for="url">Enter URL:</label>
-    <input type="text" id="url" name="url" required>
-    <button type="submit">Proxy</button>
-  </form>
-  <div id="result"></div>
-
-  <script>
-    document.getElementById('proxyForm').addEventListener('submit', function (event) {
-  event.preventDefault();
-
-  const urlInput = document.getElementById('url');
-
-  // Extract the entered URL
-  const enteredURL = urlInput.value;
-
-  // Construct the proxy URL with a single slash after 'https:'
-  const encodedURL = encodeURIComponent(`https:/${enteredURL}`);
-  const proxyURL = `https://web-proxy-delta.vercel.app/proxy/${encodedURL}`;
-
-  // Redirect the user to the proxy URL
-  window.location.href = proxyURL;
-});
-  </script>
+    <h1>Proxy Server</h1>
+    <form id="proxyForm" action="/proxy" method="get">
+        <label for="url">Enter URL:</label>
+        <input type="url" id="url" name="url" required>
+        <button type="submit">Proxy</button>
+    </form>
 </body>
 </html>
+
