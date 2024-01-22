@@ -14,11 +14,10 @@ app.use('/proxy', async (req, res) => {
 
   try {
     // Fetch the HTML content from the target website
-    const response = await axios.get(targetURL);
-    const htmlContent = response.data;
+    const { data } = await axios.get(targetURL);
 
     // Modify the HTML using Cheerio or any other HTML manipulation library
-    const $ = cheerio.load(htmlContent);
+    const $ = cheerio.load(data);
 
     // Example: Add a div with a custom message to the body
     $('body').append('<div>This content was modified by the proxy server!</div>');
@@ -34,5 +33,3 @@ app.use('/proxy', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Proxy server is running on http://localhost:${PORT}`);
 });
-
-
