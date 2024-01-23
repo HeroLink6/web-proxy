@@ -1,51 +1,37 @@
 const express = require('express');
-const https = require('https');
-const http = require('http');
-const path = require('path');
+const Unblocker = require('unblocker');
+const Transform = require('stream').Transform;
 
 const app = express();
-const PORT = 3000;
 
-app.use(express.static('public'));
+function googleAnalyticsMiddleware(data) {
+    if (data.contentType === 'text/html') {
+        data.stream = data.stream.pipe(new Transform({
+            decodeStrings: false,
+            transform: function(chunk, encoding, next) {
+                // Modify the HTML content if needed
+                this.push(chunk);
+                next();
+            }
+        }));
+    }
+}
 
-app.get('/proxy', (req, res) => {
-  const targetURL = req.query.url;
-  console.log('Requested URL:', targetURL);
-
-  if (!targetURL) {
-    return res.status(400).send('Target URL not provided');
-  }
-
-  const client = targetURL.startsWith('https') ? https : http;
-
-  // Make a request to the target website
-  const proxyRequest = client.get(targetURL, (proxyRes) => {
-    let data = '';
-
-    proxyRes.on('data', (chunk) => {
-      data += chunk;
-    });
-
-    proxyRes.on('end', () => {
-      // Send the received data back to the client
-      res.send(data);
-    });
-  });
-
-  proxyRequest.on('error', (error) => {
-    console.error('Error:', error);
-    res.status(500).send('Internal Server Error');
-  });
-
-  proxyRequest.end();
+const unblocker = new Unblocker({
+    prefix: '/proxy/',
+    responseMiddleware: [
+        googleAnalyticsMiddleware
+    ]
 });
 
+app.use(unblocker);
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+app.use('/', express.static(__dirname + '/public'));
 
-app.listen(PORT, () => {
-  console.log(`Proxy server is running on http://localhost:${PORT}`);
-});
+const port = process.env.PORT || process.env.VCAP_APP_PORT || 8080;
+
+app.listen(port, function() {
+    console.log(`Node unblocker process listening at http://localhost:${port}/`);
+}).on("upgrade", unblocker.onUpgrade);
+
 
