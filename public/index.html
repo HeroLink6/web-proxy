@@ -13,7 +13,7 @@
         <button type="submit">Proxy</button>
     </form>
 
-    <iframe id="proxyFrame" style="width: 100%; height: 600px; border: none;"></iframe>
+    <div id="proxyContent"></div>
 
     <script>
         async function handleSubmit(event) {
@@ -25,9 +25,16 @@
                 return alert('Target URL not provided');
             }
 
-            const proxyFrame = document.getElementById('proxyFrame');
-            proxyFrame.src = `/proxy?url=${encodeURIComponent(targetURL)}`;
+            try {
+                const response = await fetch(`/proxy?url=${encodeURIComponent(targetURL)}`);
+                const modifiedHTML = await response.text();
+                document.getElementById('proxyContent').innerHTML = modifiedHTML;
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to fetch or modify the content');
+            }
         }
     </script>
 </body>
 </html>
+
