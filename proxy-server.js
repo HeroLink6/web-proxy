@@ -19,7 +19,7 @@ app.use('/proxy', async (req, res) => {
     // Make a request to the target website
     const response = await axios.get(targetURL);
 
-    // Send the modified HTML back to the client
+    // Send the HTML content back to the client
     res.send(response.data);
   } catch (error) {
     console.error('Error:', error);
@@ -34,5 +34,6 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Proxy server is running on http://localhost:${PORT}`);
 });
+
 
 
