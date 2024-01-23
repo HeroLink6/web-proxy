@@ -3,7 +3,6 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const path = require('path');
 
 const app = express();
-
 const PORT = 3000;
 
 app.use(express.static('public'));
@@ -21,6 +20,9 @@ app.use('/proxy', (req, res) => {
   }
 
   try {
+    // Update the proxy middleware target dynamically
+    proxyMiddleware.target = targetURL;
+
     // Use the proxy middleware to forward the request
     proxyMiddleware(req, res, (err) => {
       if (err) {
