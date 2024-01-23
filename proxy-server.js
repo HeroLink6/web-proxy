@@ -10,6 +10,7 @@ app.use(express.static('public'));
 
 app.get('/proxy', (req, res) => {
   const targetURL = req.query.url;
+  console.log('Requested URL:', targetURL);
 
   if (!targetURL) {
     return res.status(400).send('Target URL not provided');
@@ -38,6 +39,7 @@ app.get('/proxy', (req, res) => {
 
   proxyRequest.end();
 });
+
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
