@@ -1,5 +1,6 @@
 const express = require('express');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const https = require('https');
+const http = require('http');
 const path = require('path');
 
 const app = express();
@@ -7,33 +8,35 @@ const PORT = 3000;
 
 app.use(express.static('public'));
 
-// Set up proxy middleware
-const proxyMiddleware = createProxyMiddleware({
-  changeOrigin: true,
-});
-
-app.use('/proxy', (req, res) => {
+app.get('/proxy', (req, res) => {
   const targetURL = req.query.url;
 
   if (!targetURL) {
     return res.status(400).send('Target URL not provided');
   }
 
-  try {
-    // Update the proxy middleware target dynamically
-    proxyMiddleware.target = targetURL;
+  const client = targetURL.startsWith('https') ? https : http;
 
-    // Use the proxy middleware to forward the request
-    proxyMiddleware(req, res, (err) => {
-      if (err) {
-        console.error('Proxy Error:', err);
-        res.status(500).send('Internal Server Error');
-      }
+  // Make a request to the target website
+  const proxyRequest = client.get(targetURL, (proxyRes) => {
+    let data = '';
+
+    proxyRes.on('data', (chunk) => {
+      data += chunk;
     });
-  } catch (error) {
+
+    proxyRes.on('end', () => {
+      // Send the received data back to the client
+      res.send(data);
+    });
+  });
+
+  proxyRequest.on('error', (error) => {
     console.error('Error:', error);
     res.status(500).send('Internal Server Error');
-  }
+  });
+
+  proxyRequest.end();
 });
 
 app.get('/', (req, res) => {
