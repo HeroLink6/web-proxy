@@ -1,5 +1,5 @@
 const express = require('express');
-const puppeteer = require('puppeteer');
+const axios = require('axios');
 const path = require('path');
 
 const app = express();
@@ -16,19 +16,11 @@ app.use('/proxy', async (req, res) => {
   }
 
   try {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    // Navigate to the target website
-    await page.goto(targetURL);
-
-    // Extract the modified HTML using evaluate
-    const modifiedHTML = await page.evaluate(() => document.documentElement.outerHTML);
+    // Make a request to the target website
+    const response = await axios.get(targetURL);
 
     // Send the modified HTML back to the client
-    res.send(modifiedHTML);
-
-    await browser.close();
+    res.send(response.data);
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send('Internal Server Error');
@@ -42,4 +34,5 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Proxy server is running on http://localhost:${PORT}`);
 });
+
 
